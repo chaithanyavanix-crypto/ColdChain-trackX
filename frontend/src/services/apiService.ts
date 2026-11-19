@@ -19,6 +19,7 @@ async function safeFetch<T>(url: string, options?: RequestInit, timeoutMs = 5000
       signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
         ...(options?.headers || {}),
       },
     });
