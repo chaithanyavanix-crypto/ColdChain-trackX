@@ -41,6 +41,7 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const referenceLayerRef = useRef<L.TileLayer | null>(null);
   const overlayLayerRef = useRef<L.LayerGroup | null>(null);
 
   // Initialize Leaflet map once
@@ -69,6 +70,7 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
       map.remove();
       mapRef.current = null;
       tileLayerRef.current = null;
+      referenceLayerRef.current = null;
       overlayLayerRef.current = null;
     };
   }, []);
@@ -81,23 +83,35 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
     if (tileLayerRef.current) {
       map.removeLayer(tileLayerRef.current);
     }
+    if (referenceLayerRef.current) {
+      map.removeLayer(referenceLayerRef.current);
+      referenceLayerRef.current = null;
+    }
 
     const url =
       mapStyle === 'satellite'
         ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{y}/{x}{r}.png';
+        : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
 
     const attribution =
       mapStyle === 'satellite'
-        ? 'Tiles &copy; Esri'
-        : '&copy; OpenStreetMap &copy; CARTO';
+        ? 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+        : 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ';
 
     const layer = L.tileLayer(url, {
       attribution,
-      maxZoom: 18,
+      maxZoom: 16,
     }).addTo(map);
 
     tileLayerRef.current = layer;
+
+    if (mapStyle === 'dark') {
+      const refLayer = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+        { maxZoom: 16 }
+      ).addTo(map);
+      referenceLayerRef.current = refLayer;
+    }
   }, [mapStyle]);
 
   // Fit bounds or recenter when target coords change
