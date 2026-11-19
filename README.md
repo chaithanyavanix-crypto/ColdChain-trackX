@@ -1,162 +1,179 @@
-# ❄️ TracX: AI-Powered Vehicle Tracking & Cold-Chain Monitoring Platform
+# ❄️ TracX: Enterprise Cold-Chain Telematics & Fleet AI Platform
 
-An end-to-end, production-ready telematics and cold-chain intelligence platform built with **FastAPI**, **WebSockets**, **Leaflet.js**, **Chart.js**, and a **Dual-Layer Decision Architecture** (Layer 1 Deterministic Safety Rules + Layer 2 AI Predictive Models).
+An end-to-end, production-ready IoT telematics and cold-chain intelligence platform built with **FastAPI**, **PostgreSQL 16**, **WebSockets**, **React 19 / TypeScript / Vite**, **Leaflet Maps**, and a **Dual-Layer Intelligence Architecture** (Deterministic Safety Rules + AI Predictive Thermal Forecasting).
 
 ---
 
-## 🏗️ Architecture Overview
+## 🏗️ System Architecture
 
 ```
-                          ┌──────────────────────────┐
-                          │   TRACX HARDWARE DEVICE  │
-                          │                          │
-                          │  • GNSS (u-blox NEO-M8N) │
-                          │  • DS18B20 Temp Probe    │
-                          │  • MPU-6050 6-Axis IMU   │
-                          │  • Tamper Microswitch    │
-                          │  • SPI Flash Buffer      │
-                          │  • Quectel 4G Cat-1      │
-                          └────────────┬─────────────┘
-                                       │ (4G LTE / MQTT / HTTPS)
-                                       ▼
-                       ┌───────────────────────────────┐
-                       │   TRACX FASTAPI CLOUD CORE    │
-                       └──────────────┬────────────────┘
-                                      │
-               ┌──────────────────────┴──────────────────────┐
-               ▼                                             ▼
-  ┌─────────────────────────┐                   ┌─────────────────────────┐
-  │ Layer 1: Rule Engine    │                   │ Layer 2: AI Engine      │
-  │ • Temp Thresholds       │                   │ • 15m/30m Temp Forecast │
-  │ • Crash Shock (>3.0g)   │                   │ • GPS Kinematic Filter  │
-  │ • Enclosure Tamper Open │                   │ • Dead Reckoning Model  │
-  │ • Power Disconnect      │                   │ • IMU Driver Classifier │
-  │ • Battery Low           │                   │ • Multi-Signal Tamper   │
-  └────────────┬────────────┘                   │ • Predictive Battery    │
-               │                                └────────────┬────────────┘
-               └──────────────────────┬──────────────────────┘
-                                      │ (Real-Time WebSocket)
-                                      ▼
-                        ┌──────────────────────────┐
-                        │   WEB & FLEET DASHBOARD  │
-                        │  • Live Leaflet GPS Map  │
-                        │  • Cold-Chain Temp Curve │
-                        │  • AI Prediction Overlay │
-                        │  • Interactive Simulator │
-                        │  • Real-Time Alert Log   │
-                        └──────────────────────────┘
+   [ Physical Vehicle IoT Tracker ] ──(4G LTE HTTP POST)──┐
+   (GNSS GPS + Temp Probe + Door Sensor + SIM)           │
+                                                         ▼
+                                       ┌───────────────────────────────────┐
+                                       │    Permanent Public HTTPS URL     │
+                                       │ (tipper-compost-fantasize.ngrok)  │
+                                       └─────────────────┬─────────────────┘
+                                                         │
+                                                         ▼
+                                       ┌───────────────────────────────────┐
+                                       │     FastAPI Core Engine (:8000)   │
+                                       ├───────────────────────────────────┤
+                                       │ • Ingestion & Auto-Provisioning   │
+                                       │ • IMEI & IMSI Carrier Token Sync  │
+                                       │ • Layer 1: Rule Engine (2°C–8°C)  │
+                                       │ • Layer 2: AI Predictive Drift    │
+                                       │ • Trip Route & Halt State Machine │
+                                       └───────┬───────────────────┬───────┘
+                                               │                   │
+                                               ▼                   ▼
+                           ┌───────────────────────────┐   ┌───────────────────────────┐
+                           │   PostgreSQL 16 Database  │   │  Real-Time WebSocket WSS  │
+                           │  • telemetry_history (GPS)│   │  • wss://.../ws/telemetry │
+                           │  • trip_waypoints & halts │   └─────────────┬─────────────┘
+                           │  • devices & alerts audit │                 │
+                           └───────────────────────────┘                 ▼
+                                                           ┌───────────────────────────┐
+                                                           │  Vercel Frontend (React)  │
+                                                           │  • Live Esri Dark Map     │
+                                                           │  • Route Replay & Halts   │
+                                                           │  • Telemetry Gauge Dials  │
+                                                           │  • Fleet Inventory & Edit │
+                                                           └───────────────────────────┘
 ```
 
 ---
 
-## 🧠 The 6 Layer-2 AI Intelligence Modules
+## 🚀 How to Run the Platform Locally
 
-1. **Predictive Cold-Chain Excursion Engine:**
-   - Computes thermal rate of change $\frac{dT}{dt}$ (°C/min) using sliding-window linear regression.
-   - Forecasts cargo temperatures **15 and 30 minutes ahead**.
-   - Calculates dynamic excursion risk % and provides early warning before the 2°C–8°C threshold is breached.
-
-2. **GPS Kinematic & Spoofing Anomaly Filter:**
-   - Checks spatial displacement vs. elapsed time using Haversine formulation.
-   - Flags teleportation anomalies and multipath glitches.
-
-3. **Dead Reckoning GPS Loss Recovery:**
-   - When entering tunnels or basements (GNSS fix lost), forward-projects position using last known heading, velocity, and IMU data with confidence decay.
-
-4. **IMU Driver Behavior & Crash Classifier:**
-   - Extracts 3-axis vector acceleration $G = \sqrt{a_x^2 + a_y^2 + a_z^2}$ and jerk derivative $\frac{dG}{dt}$.
-   - Classifies: *Smooth Normal, Harsh Braking, Harsh Acceleration, Aggressive Cornering, Road Bump, or Severe Crash Impact*.
-
-5. **Multi-Signal Bayesian Tamper & Theft Fusion:**
-   - Correlates microswitch trigger, vehicle stationary state, ambient temperature surge, and IMU angular tilt.
-
-6. **Predictive Device & Battery Health:**
-   - Monitors Li-ion voltage decay under 4G transmission bursts to predict battery replacement needs.
+### Prerequisites
+* **Python**: 3.10+ (installed in `.venv`)
+* **Bun** or **Node.js**: (Bun is pre-configured at `~/.bun/bin/bun.exe`)
+* **PostgreSQL 16**: (Running on `localhost:5432`, fallback to SQLite is automatic)
 
 ---
 
-## 🚀 How to Run the Platform
+### Option 1: 1-Click Launchers (Windows)
 
-### 1. Launch the Server & Dashboard
-```bash
-source .venv/bin/activate
-python tracx_platform/run_tracx.py
+In the root folder, simply double-click:
+1. **`run_backend.bat`** ➔ Starts FastAPI backend on `http://localhost:8000`.
+2. **`run_frontend.bat`** ➔ Starts Vite React frontend on `http://localhost:5173`.
+3. **`start_ngrok.bat`** ➔ Starts the permanent static tunnel to receive live hardware packets.
+
+*(Or run **`run_all.bat`** to start the full system in one go).*
+
+---
+
+### Option 2: Manual Terminal Commands
+
+#### 1. Start the Backend Server (Terminal 1)
+```powershell
+# Activate virtual environment
+.\.venv\Scripts\Activate.ps1
+
+# Run the FastAPI server
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+```
+* Backend API Docs: **`http://localhost:8000/docs`**
+* Health Check: **`http://localhost:8000/api/v1/fleet/overview`**
+
+#### 2. Start the Frontend Dev Server (Terminal 2)
+```powershell
+cd frontend
+bun install
+bun run dev
+```
+* Local Web Dashboard: **`http://localhost:5173`**
+
+#### 3. Start the Permanent Public Tunnel (Terminal 3)
+```powershell
+.\ngrok.exe http 8000 --url https://tipper-compost-fantasize.ngrok-free.dev
 ```
 
-### 2. Access the Dashboard
-Open your browser and navigate to:
-👉 **`https://smart-ccms.loca.lt`** *(or `http://localhost:8000` locally)*
+---
+
+## 🌐 Deploy Frontend to Vercel
+
+The frontend is fully configured for continuous deployment on Vercel:
+
+1. Push your changes to GitHub:
+   ```powershell
+   git push origin main
+   ```
+2. Go to **[vercel.com/new](https://vercel.com/new)** and import **`ColdChain-trackX`**.
+3. Configure project settings:
+   * **Root Directory**: `frontend`
+   * **Framework Preset**: `Vite`
+   * **Build Command**: `bun run build` (or `vite build`)
+   * **Output Directory**: `dist`
+4. Set **Environment Variables**:
+   * `VITE_API_BASE` = `https://tipper-compost-fantasize.ngrok-free.dev`
+   * `VITE_WS_BASE` = `wss://tipper-compost-fantasize.ngrok-free.dev`
+5. Click **Deploy**.
 
 ---
 
-## 📡 Hardware Telemetry Ingestion Endpoint
+## 📡 Hardware / Firmware Ingestion API
 
-Physical Smart CCMS hardware devices (ESP32-S3 / STM32 with Quectel 4G Cat-1) send JSON payloads to:
-- Public URL: **`POST https://smart-ccms.loca.lt/api/v1/telemetry`**
-- Local URL:  **`POST http://localhost:8000/api/v1/telemetry`**
+Physical hardware trackers (e.g., Quectel EC200U, ESP32, Nordic nRF9160) transmit periodic JSON telemetry packets over cellular LTE to:
 
-### Firmware Timestamp & UTC Requirement
-> [!IMPORTANT]
-> **Firmware Clock Standard:** Firmware must transmit timestamps formatted as **ISO-8601 UTC** with a trailing `Z` (e.g. `"2026-10-10T14:30:00Z"`) or Unix epoch timestamp in seconds.
-> Far-off device clocks (e.g. uninitialized RTC `< 2024`, drift `> 10 min` in the future, or `> 24 hours` in the past) are rejected by the backend and replaced with verified server UTC.
+* **Production Endpoint**: **`POST https://tipper-compost-fantasize.ngrok-free.dev/api/v1/telemetry`**
+* **Localhost Endpoint**: **`POST http://localhost:8000/api/v1/telemetry`**
+* **Headers**: `Content-Type: application/json`
 
-### Sample Hardware Payload (Nested Schema)
+### JSON Payload Specification
 ```json
 {
   "device_id": "GW-001",
-  "timestamp": "2026-10-10T14:30:00Z",
-  "door_status": "SEALED",
-  "node_connected": true,
-  "gps": {
-    "lat": 17.4435,
-    "lng": 78.3772,
-    "speed_kmh": 45.2,
-    "heading_deg": 180.0,
-    "altitude_m": 540.0,
-    "satellites_count": 10,
-    "fix_status": "3D_FIX"
-  },
-  "temperature": {
-    "cargo_temp_c": 4.8,
-    "ambient_temp_c": 31.0,
-    "target_min_c": 2.0,
-    "target_max_c": 8.0,
-    "probe_connected": true
-  },
-  "imu": {
-    "accel_x_g": 0.02,
-    "accel_y_g": 0.01,
-    "accel_z_g": 1.0,
-    "gyro_x_dps": 0.0,
-    "gyro_y_dps": 0.0,
-    "gyro_z_dps": 0.0,
-    "shock_detected": false
-  },
-  "tamper_switch_closed": true,
-  "power_network": {
-    "battery_pct": 92,
-    "battery_voltage_v": 4.05,
-    "external_power_connected": true,
-    "lte_csq_rssi": 26,
-    "network_rat": "4G Cat-1",
-    "offline_buffered_packets": 0
-  }
+  "temperature": 4.35,
+  "humidity": 58.0,
+  "latitude": 17.4435,
+  "longitude": 78.3772,
+  "speed_kmh": 42.0,
+  "door_status": "CLOSED",
+  "tamper": false,
+  "imei": "860738070471994",
+  "imsi": "310410123451042",
+  "network_rssi": -68,
+  "battery_pct": 95
 }
 ```
 
-### Sample Quectel EC200U Gateway Payload (Flat Ingestion)
-```json
-{
-  "gateway_id": "GW-001",
-  "node_id": "NODE-001",
-  "timestamp": "2026-10-10T14:30:00Z",
-  "latitude": 17.4435,
-  "longitude": 78.3772,
-  "temperature": 4.8,
-  "node_connected": true,
-  "door_status": "SEALED",
-  "tamper": false,
-  "network_rssi": -72,
-  "speed_kmh": 42.0
-}
+### Quick Test via cURL
+Test your live ingestion pipeline from any terminal:
+```powershell
+curl -X POST "https://tipper-compost-fantasize.ngrok-free.dev/api/v1/telemetry" `
+  -H "Content-Type: application/json" `
+  -d '{"device_id":"GW-001","temperature":4.5,"latitude":17.4485,"longitude":78.3741,"speed_kmh":45.0,"door_status":"CLOSED","tamper":false,"imei":"860738070471994","imsi":"310410123451042","network_rssi":-65,"battery_pct":98}'
 ```
+
+---
+
+## 🗄️ PostgreSQL Database Schema
+
+Telemetry points and routes are automatically persisted into PostgreSQL (`tracx_fleet`):
+
+| Table | Purpose |
+| :--- | :--- |
+| **`devices`** | Master registry: `device_id`, `vehicle_name`, `driver_name`, `imei`, `imsi`, `target_min_c`, `target_max_c`. |
+| **`telemetry_history`** | Time-series log: `lat`, `lng`, `speed_kmh`, `cargo_temp_c`, `battery_pct`, `heading_deg`, `timestamp`. |
+| **`trip_waypoints`** | Consecutive breadcrumbs forming the interactive route polyline on the Leaflet map. |
+| **`trips`** | Trip summary: `start_time`, `end_time`, `total_distance_km`, `max_speed_kmh`, `mkt_temp_c`. |
+| **`trip_halts`** | Automated stop detection: logs coordinates and dwell duration whenever a vehicle halts $\ge 3$ min. |
+| **`alerts_history`** | Temperature excursion audit logs and tamper security events. |
+
+---
+
+## 🛠️ Tech Stack
+
+* **Backend**: FastAPI, Python 3.11, Uvicorn, Psycopg2, SQLite3, Pydantic v2
+* **Frontend**: React 19, Vite 8, TypeScript, Tailwind CSS, Leaflet Maps, Lucide Icons
+* **Tunneling**: Ngrok (Permanent Static Domain)
+* **Hosting**: Vercel (Frontend Edge) + Local / VPS (Backend Core)
+* **Intelligence**: Dual-Layer Architecture (Layer-1 Deterministic Rules + Layer-2 AI Thermal Forecasting)
+
+---
+
+## 🔒 Security & Privacy Notice
+* Secrets such as database credentials and local `.env` files are strictly excluded via `.gitignore`.
+* Use `.env.example` as a template for production deployments.
