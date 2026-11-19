@@ -1,0 +1,6 @@
+{
+  "name": "ColdChain CMS",
+  "description": "Smart Cold Chain Management System for real-time refrigerated fleet telemetry, route replay, geofencing, AI thermal risk prediction, and FDA/WHO GDP compliance reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
