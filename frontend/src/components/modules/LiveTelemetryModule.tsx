@@ -97,7 +97,7 @@ export const LiveTelemetryModule: React.FC = () => {
             id="telemetryGatewaySelect"
             value={gateway.id}
             onChange={(e) => setSelectedGatewayId(e.target.value)}
-            className="h-9 rounded-lg border border-slate-800 bg-[#121824] px-3 font-mono text-xs text-slate-100 focus:border-sky-500 focus:outline-none"
+            className="h-9 rounded-lg border border-slate-700/80 bg-[#0f172a] px-3 font-mono text-xs text-slate-100 focus:border-blue-500 focus:outline-none"
           >
             {vehicles.map((v) => (
               <option key={v.id} value={v.id}>
@@ -111,10 +111,10 @@ export const LiveTelemetryModule: React.FC = () => {
       {/* 3 Hero Cards */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {/* Card 1: Gateway Status & IMEI/IMSI */}
-        <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+        <div className="rounded-lg border border-slate-800 bg-[#0f172a] p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-sky-500/25 bg-sky-500/10 text-sky-400">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-500/20 bg-blue-500/10 text-blue-400">
                 <Cpu className="h-5 w-5" />
               </div>
               <div>
@@ -125,12 +125,12 @@ export const LiveTelemetryModule: React.FC = () => {
               </div>
             </div>
             <span
-              className={`text-xs font-semibold ${
+              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${
                 gateway.connectivity === 'Online'
-                  ? 'text-emerald-400'
+                  ? 'border border-emerald-500/20 bg-emerald-500/10 text-emerald-400'
                   : gateway.connectivity === 'Degraded'
-                  ? 'text-amber-400'
-                  : 'text-rose-400'
+                  ? 'border border-amber-500/20 bg-amber-500/10 text-amber-400'
+                  : 'border border-rose-500/20 bg-rose-500/10 text-rose-400'
               }`}
             >
               {gateway.connectivity}
@@ -154,10 +154,10 @@ export const LiveTelemetryModule: React.FC = () => {
         </div>
 
         {/* Card 2: Node Status */}
-        <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+        <div className="rounded-lg border border-slate-800 bg-[#0f172a] p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-500/25 bg-cyan-500/10 text-cyan-400">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">
                 <Network className="h-5 w-5" />
               </div>
               <div>
@@ -189,10 +189,10 @@ export const LiveTelemetryModule: React.FC = () => {
         </div>
 
         {/* Card 3: AI Device Insight (3-second triage) */}
-        <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+        <div className="rounded-lg border border-slate-800 bg-[#0f172a] p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-500/25 bg-amber-500/10 text-amber-400">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10 text-amber-400">
                 <ShieldAlert className="h-5 w-5" />
               </div>
               <div>
@@ -203,12 +203,12 @@ export const LiveTelemetryModule: React.FC = () => {
               </div>
             </div>
             <span
-              className={`text-xs font-semibold ${
+              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${
                 gateway.condition === 'Critical'
-                  ? 'text-rose-400'
+                  ? 'border border-rose-500/20 bg-rose-500/10 text-rose-400'
                   : gateway.condition === 'Warning'
-                  ? 'text-amber-400'
-                  : 'text-emerald-400'
+                  ? 'border border-amber-500/20 bg-amber-500/10 text-amber-400'
+                  : 'border border-emerald-500/20 bg-emerald-500/10 text-emerald-400'
               }`}
             >
               {gateway.condition}

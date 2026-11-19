@@ -3,15 +3,16 @@
 
 @layer base {
   :root {
-    --ccms-bg-canvas: #0b0f17;
-    --ccms-bg-surface: #121824;
-    --ccms-bg-elevated: #171f2e;
-    --ccms-border: rgba(148, 163, 184, 0.14);
-    --ccms-border-strong: rgba(148, 163, 184, 0.24);
-    --ccms-text-primary: #f1f5f9;
+    --ccms-bg-canvas: #090d16;
+    --ccms-bg-surface: #0f172a;
+    --ccms-bg-elevated: #162032;
+    --ccms-border: rgba(148, 163, 184, 0.12);
+    --ccms-border-strong: rgba(148, 163, 184, 0.22);
+    --ccms-text-primary: #f8fafc;
     --ccms-text-secondary: #94a3b8;
     --ccms-text-muted: #64748b;
-    --ccms-accent: #38bdf8;
+    --ccms-accent: #2563eb;
+    --ccms-accent-hover: #1d4ed8;
     --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
     --font-sans: 'DM Sans', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -45,29 +46,29 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0b0f17;
+  background: #090d16;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #273244;
+  background: #1e293b;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b4b66;
+  background: #334155;
 }
 
 /* Leaflet dark UI overrides */
 .leaflet-container {
-  background: #0e1420;
+  background: #0c121e;
   font-family: var(--font-sans);
 }
 
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: #171f2e;
-  color: #f1f5f9;
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: #111a28;
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.2);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
 }
 
@@ -76,11 +77,67 @@
 }
 
 .leaflet-control-attribution {
-  background: rgba(11, 15, 23, 0.78) !important;
+  background: rgba(9, 13, 22, 0.85) !important;
   color: #64748b !important;
   font-size: 10px !important;
 }
 
 .leaflet-control-attribution a {
   color: #94a3b8 !important;
+}
+
+/* Enterprise Status Pills */
+.badge-status-nominal {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.22);
+}
+
+.badge-status-warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+}
+
+.badge-status-critical {
+  background-color: rgba(244, 63, 94, 0.1);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.24);
+}
+
+.badge-status-neutral {
+  background-color: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* Cargo Category Badges */
+.badge-cargo-vaccine {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #60a5fa;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+}
+
+.badge-cargo-insulin {
+  background-color: rgba(13, 148, 136, 0.1);
+  color: #2dd4bf;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+.badge-cargo-antibody {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.badge-cargo-plasma {
+  background-color: rgba(147, 51, 234, 0.1);
+  color: #c084fc;
+  border: 1px solid rgba(147, 51, 234, 0.25);
+}
+
+.badge-cargo-oncology {
+  background-color: rgba(225, 29, 72, 0.1);
+  color: #fb7185;
+  border: 1px solid rgba(225, 29, 72, 0.25);
 }

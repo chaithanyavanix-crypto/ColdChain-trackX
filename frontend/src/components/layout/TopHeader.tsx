@@ -72,15 +72,15 @@ export const TopHeader: React.FC = () => {
   }, [globalSearchQuery, vehicles, trips]);
 
   return (
-    <header className="ccms-top-header sticky top-0 z-40 border-b border-slate-800/80 bg-[#0d121c]/95 backdrop-blur-md">
+    <header className="ccms-top-header sticky top-0 z-40 border-b border-slate-800/60 bg-[#0a0f18]/95 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-6">
         {/* Brand Zone */}
         <button
           type="button"
           onClick={() => setActiveModule('overview')}
-          className="flex shrink-0 items-center gap-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 rounded-md"
+          className="flex shrink-0 items-center gap-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/15 text-sky-400 border border-sky-400/25">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600/15 text-blue-400 border border-blue-500/25">
             <Snowflake className="h-4.5 w-4.5" />
           </span>
           <span className="font-display text-base font-bold tracking-tight text-slate-100 whitespace-nowrap">
@@ -102,9 +102,9 @@ export const TopHeader: React.FC = () => {
                 type="button"
                 data-module={item.id}
                 onClick={() => setActiveModule(item.id)}
-                className={`relative flex items-center gap-1.5 px-3 py-2 text-xs sm:text-[13px] font-medium whitespace-nowrap shrink-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 rounded-md ${
+                className={`relative flex items-center gap-1.5 px-3 py-2 text-xs sm:text-[13px] font-medium whitespace-nowrap shrink-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md ${
                   isActive
-                    ? 'text-sky-400'
+                    ? 'text-blue-400 font-semibold'
                     : 'text-slate-400 hover:text-slate-100'
                 }`}
               >
@@ -116,7 +116,7 @@ export const TopHeader: React.FC = () => {
                   </span>
                 )}
                 {isActive && (
-                  <span className="absolute right-2 -bottom-[13px] left-2 h-[2px] rounded-full bg-sky-400" />
+                  <span className="absolute right-2 -bottom-[13px] left-2 h-[2px] rounded-full bg-blue-500" />
                 )}
               </button>
             );
@@ -136,7 +136,7 @@ export const TopHeader: React.FC = () => {
               onBlur={() => window.setTimeout(() => setIsSearchFocused(false), 180)}
               placeholder="Search gateway, plate, trip..."
               aria-label="Search fleet or trips"
-              className="h-9 w-56 rounded-lg border border-slate-800 bg-[#131a27] pl-8 pr-7 text-xs text-slate-200 placeholder:text-slate-500 focus:border-sky-500/60 focus:outline-none"
+              className="h-9 w-56 rounded-lg border border-slate-800 bg-[#0e1420] pl-8 pr-7 text-xs text-slate-200 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
             />
             {globalSearchQuery && (
               <button
@@ -150,7 +150,7 @@ export const TopHeader: React.FC = () => {
             )}
 
             {isSearchFocused && globalSearchQuery.trim().length > 0 && (
-              <div className="absolute right-0 mt-2 w-80 rounded-lg border border-slate-700/80 bg-[#131a27] p-2 shadow-2xl">
+              <div className="absolute right-0 mt-2 w-80 rounded-lg border border-slate-700/80 bg-[#121927] p-2 shadow-2xl">
                 {searchResults.vehicles.length === 0 && searchResults.trips.length === 0 ? (
                   <p className="px-2 py-3 text-center text-xs text-slate-400">
                     No matching gateways or trips.
@@ -174,7 +174,7 @@ export const TopHeader: React.FC = () => {
                               <span className="font-mono font-semibold text-slate-100">{v.id}</span>
                               <span className="ml-2 text-slate-400">{v.vehiclePlate}</span>
                             </span>
-                            <span className="font-mono text-sky-400 tabular-nums">{v.currentTempC}°C</span>
+                            <span className="font-mono text-emerald-400 tabular-nums">{v.currentTempC}°C</span>
                           </button>
                         ))}
                       </div>
@@ -210,7 +210,7 @@ export const TopHeader: React.FC = () => {
               type="button"
               onClick={() => setIsNotifOpen((prev) => !prev)}
               aria-label="Active alerts menu"
-              className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-[#131a27] text-slate-300 hover:border-slate-700 hover:text-white transition-colors"
+              className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-[#0e1420] text-slate-300 hover:border-slate-700 hover:text-white transition-colors"
             >
               <Bell className="h-4 w-4" />
               {activeAlertsList.length > 0 && (
@@ -221,7 +221,7 @@ export const TopHeader: React.FC = () => {
             </button>
 
             {isNotifOpen && (
-              <div className="absolute right-0 mt-2 w-80 rounded-lg border border-slate-700/80 bg-[#131a27] p-3 shadow-2xl">
+              <div className="absolute right-0 mt-2 w-80 rounded-lg border border-slate-700/80 bg-[#121927] p-3 shadow-2xl">
                 <div className="mb-2 flex items-center justify-between border-b border-slate-800 pb-2">
                   <span className="text-xs font-semibold text-slate-100">
                     Active Alerts ({activeAlertsList.length})
@@ -232,7 +232,7 @@ export const TopHeader: React.FC = () => {
                       setIsNotifOpen(false);
                       setActiveModule('alerts');
                     }}
-                    className="text-xs font-medium text-sky-400 hover:text-sky-300"
+                    className="text-xs font-medium text-blue-400 hover:text-blue-300"
                   >
                     View all
                   </button>
@@ -273,7 +273,7 @@ export const TopHeader: React.FC = () => {
                               setIsNotifOpen(false);
                               openVehicleInTelemetry(a.gatewayId);
                             }}
-                            className="text-[11px] font-medium text-sky-400 hover:text-sky-300"
+                            className="text-[11px] font-medium text-blue-400 hover:text-blue-300"
                           >
                             Inspect
                           </button>

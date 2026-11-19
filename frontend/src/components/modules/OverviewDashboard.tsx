@@ -56,25 +56,25 @@ export const OverviewDashboard: React.FC = () => {
       value: String(kpis.totalVehicles),
       sub: 'Provisioned gateways',
       icon: Truck,
-      borderClass: 'border-sky-500/35',
+      borderClass: 'border-slate-800/90 hover:border-blue-500/40',
       valueClass: 'text-slate-100',
-      iconClass: 'text-sky-400',
+      iconClass: 'text-blue-400',
     },
     {
       label: 'In Transit',
       value: String(kpis.inTransit),
       sub: 'Active road corridors',
       icon: Activity,
-      borderClass: 'border-cyan-500/35',
-      valueClass: 'text-cyan-300',
-      iconClass: 'text-cyan-400',
+      borderClass: 'border-slate-800/90 hover:border-emerald-500/40',
+      valueClass: 'text-emerald-400',
+      iconClass: 'text-emerald-400',
     },
     {
       label: 'At Stop',
       value: String(kpis.atStop),
       sub: 'Dock & relay hubs',
       icon: Radio,
-      borderClass: 'border-slate-800',
+      borderClass: 'border-slate-800/90 hover:border-slate-700',
       valueClass: 'text-slate-100',
       iconClass: 'text-slate-400',
     },
@@ -83,16 +83,16 @@ export const OverviewDashboard: React.FC = () => {
       value: String(kpis.offline),
       sub: 'Heartbeat timeout',
       icon: WifiOff,
-      borderClass: 'border-slate-800',
+      borderClass: kpis.offline > 0 ? 'border-amber-500/35' : 'border-slate-800/90',
       valueClass: kpis.offline > 0 ? 'text-amber-400' : 'text-slate-100',
-      iconClass: 'text-slate-400',
+      iconClass: kpis.offline > 0 ? 'text-amber-400' : 'text-slate-400',
     },
     {
       label: 'Active Alerts',
       value: String(kpis.activeAlerts),
       sub: 'Unacknowledged incidents',
       icon: AlertTriangle,
-      borderClass: kpis.activeAlerts > 0 ? 'border-rose-500/40' : 'border-slate-800',
+      borderClass: kpis.activeAlerts > 0 ? 'border-rose-500/40' : 'border-slate-800/90',
       valueClass: kpis.activeAlerts > 0 ? 'text-rose-400' : 'text-slate-100',
       iconClass: kpis.activeAlerts > 0 ? 'text-rose-400' : 'text-slate-400',
     },
@@ -101,7 +101,7 @@ export const OverviewDashboard: React.FC = () => {
       value: `${kpis.fleetHealthScore}%`,
       sub: 'Mean node stability',
       icon: Gauge,
-      borderClass: 'border-emerald-500/35',
+      borderClass: 'border-slate-800/90 hover:border-emerald-500/40',
       valueClass: 'text-emerald-400',
       iconClass: 'text-emerald-400',
     },
@@ -124,11 +124,11 @@ export const OverviewDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsLiveStreamActive(!isLiveStreamActive)}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-800 bg-[#131a27] px-3 py-1.5 text-xs font-medium text-slate-200 hover:border-slate-700 transition-colors whitespace-nowrap"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-800 bg-[#0e1420] px-3 py-1.5 text-xs font-medium text-slate-200 hover:border-slate-700 transition-colors whitespace-nowrap"
           >
             {isLiveStreamActive ? (
               <>
-                <Pause className="h-3.5 w-3.5 text-sky-400" />
+                <Pause className="h-3.5 w-3.5 text-blue-400" />
                 <span>Pause Telemetry</span>
               </>
             ) : (
@@ -148,7 +148,7 @@ export const OverviewDashboard: React.FC = () => {
           return (
             <div
               key={card.label}
-              className={`rounded-lg border ${card.borderClass} bg-[#121824] p-4 transition-colors`}
+              className={`rounded-lg border ${card.borderClass} bg-[#0f172a] p-4 transition-colors shadow-xs`}
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-slate-400">{card.label}</span>
@@ -167,7 +167,7 @@ export const OverviewDashboard: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
         {/* Column 1 (5 cols): Live Fleet Map + Trips Overview mini-table */}
         <div className="space-y-4 xl:col-span-5">
-          <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+          <div className="rounded-lg border border-slate-800/80 bg-[#0f172a] p-4 shadow-xs">
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <h2 className="font-display text-sm font-semibold text-slate-100">
@@ -177,12 +177,12 @@ export const OverviewDashboard: React.FC = () => {
                   Click any gateway marker to focus thermal curve
                 </p>
               </div>
-              <div className="flex items-center gap-1 rounded-md border border-slate-800 bg-[#0d131f] p-0.5 text-[11px]">
+              <div className="flex items-center gap-1 rounded-md border border-slate-800 bg-[#0b101a] p-0.5 text-[11px]">
                 <button
                   type="button"
                   onClick={() => setMapStyle('dark')}
-                  className={`rounded px-2 py-1 font-medium transition-colors ${
-                    mapStyle === 'dark' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:text-slate-200'
+                  className={`rounded px-2.5 py-1 font-medium transition-colors ${
+                    mapStyle === 'dark' ? 'bg-slate-800 text-blue-400' : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   Map
@@ -190,9 +190,9 @@ export const OverviewDashboard: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setMapStyle('satellite')}
-                  className={`rounded px-2 py-1 font-medium transition-colors ${
+                  className={`rounded px-2.5 py-1 font-medium transition-colors ${
                     mapStyle === 'satellite'
-                      ? 'bg-slate-800 text-sky-400'
+                      ? 'bg-slate-800 text-blue-400'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
@@ -212,13 +212,13 @@ export const OverviewDashboard: React.FC = () => {
             />
           </div>
 
-          <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+          <div className="rounded-lg border border-slate-800/80 bg-[#0f172a] p-4 shadow-xs">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-sm font-semibold text-slate-100">Trips Overview</h2>
               <button
                 type="button"
                 onClick={() => setActiveModule('trips')}
-                className="flex items-center gap-1 text-xs font-medium text-sky-400 hover:text-sky-300"
+                className="flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300"
               >
                 <span>All Trips</span>
                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -242,7 +242,7 @@ export const OverviewDashboard: React.FC = () => {
                       onClick={() => openTripInModule(t.id, 'map')}
                       className="cursor-pointer hover:bg-slate-800/40 transition-colors"
                     >
-                      <td className="py-2.5 font-mono font-semibold text-sky-400">{t.id}</td>
+                      <td className="py-2.5 font-mono font-semibold text-blue-400">{t.id}</td>
                       <td className="py-2.5 text-slate-300">
                         <div className="truncate max-w-[180px]">
                           {t.origin.split(',')[0]} → {t.destination.split(',')[0]}
@@ -268,7 +268,7 @@ export const OverviewDashboard: React.FC = () => {
 
         {/* Column 2 (4 cols): 24h Temperature Chart + AI Insights & Prediction */}
         <div className="space-y-4 xl:col-span-4">
-          <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+          <div className="rounded-lg border border-slate-800/80 bg-[#0f172a] p-4 shadow-xs">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h2 className="font-display text-sm font-semibold text-slate-100">
@@ -282,7 +282,7 @@ export const OverviewDashboard: React.FC = () => {
                 value={focusedVehicle.id}
                 onChange={(e) => setSelectedGatewayId(e.target.value)}
                 aria-label="Select gateway for 24h temperature chart"
-                className="rounded-md border border-slate-800 bg-[#0d131f] px-2.5 py-1 font-mono text-xs text-slate-200 focus:border-sky-500 focus:outline-none"
+                className="rounded-md border border-slate-800 bg-[#0b101a] px-2.5 py-1 font-mono text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
               >
                 {vehicles.map((v) => (
                   <option key={v.id} value={v.id}>
@@ -300,10 +300,10 @@ export const OverviewDashboard: React.FC = () => {
             />
           </div>
 
-          <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+          <div className="rounded-lg border border-slate-800/80 bg-[#0f172a] p-4 shadow-xs">
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <BrainCircuit className="h-4 w-4 text-sky-400" />
+                <BrainCircuit className="h-4 w-4 text-blue-400" />
                 <h2 className="font-display text-sm font-semibold text-slate-100">
                   AI Temperature Prediction
                 </h2>
@@ -311,7 +311,7 @@ export const OverviewDashboard: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveModule('ai_insights')}
-                className="text-xs font-medium text-sky-400 hover:text-sky-300"
+                className="text-xs font-medium text-blue-400 hover:text-blue-300"
               >
                 Deep Dive
               </button>
@@ -361,7 +361,7 @@ export const OverviewDashboard: React.FC = () => {
 
         {/* Column 3 (3 cols): Fleet Health Donut + Recent Alerts */}
         <div className="space-y-4 xl:col-span-3">
-          <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+          <div className="rounded-lg border border-slate-800/80 bg-[#0f172a] p-4 shadow-xs">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-sm font-semibold text-slate-100">Fleet Health</h2>
               <ShieldCheck className="h-4 w-4 text-emerald-400" />
@@ -375,13 +375,13 @@ export const OverviewDashboard: React.FC = () => {
             />
           </div>
 
-          <div className="rounded-lg border border-slate-800 bg-[#121824] p-4">
+          <div className="rounded-lg border border-slate-800/80 bg-[#0f172a] p-4 shadow-xs">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-sm font-semibold text-slate-100">Recent Alerts</h2>
               <button
                 type="button"
                 onClick={() => setActiveModule('alerts')}
-                className="text-xs font-medium text-sky-400 hover:text-sky-300"
+                className="text-xs font-medium text-blue-400 hover:text-blue-300"
               >
                 Manage
               </button>
@@ -391,7 +391,7 @@ export const OverviewDashboard: React.FC = () => {
               {alerts.slice(0, 4).map((alert) => (
                 <div
                   key={alert.id}
-                  className="rounded-md border border-slate-800/90 bg-[#0d131f] p-3 text-xs"
+                  className="rounded-md border border-slate-800/90 bg-[#0b101a] p-3 text-xs"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-mono font-semibold text-slate-100">{alert.gatewayId}</span>
@@ -401,7 +401,7 @@ export const OverviewDashboard: React.FC = () => {
                           ? 'text-rose-400'
                           : alert.severity === 'Major'
                           ? 'text-amber-400'
-                          : 'text-sky-400'
+                          : 'text-blue-400'
                       }`}
                     >
                       {alert.severity}
@@ -415,7 +415,7 @@ export const OverviewDashboard: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => openVehicleInTelemetry(alert.gatewayId)}
-                      className="font-medium text-sky-400 hover:text-sky-300"
+                      className="font-medium text-blue-400 hover:text-blue-300"
                     >
                       Open Telemetry
                     </button>

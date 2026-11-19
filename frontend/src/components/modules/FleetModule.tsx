@@ -18,6 +18,22 @@ import React, { useMemo, useState } from 'react';
 import { useColdChain } from '../../context/ColdChainContext';
 import { ConditionStatus, ConnectivityStatus, VehicleGateway } from '../../types/coldchain';
 
+const getCargoBadgeClass = (cargo: string) => {
+  const c = (cargo || '').toLowerCase();
+  if (c.includes('mrna') || c.includes('vaccin')) return 'badge-cargo-vaccine';
+  if (c.includes('insulin')) return 'badge-cargo-insulin';
+  if (c.includes('antibod') || c.includes('monoclonal')) return 'badge-cargo-antibody';
+  if (c.includes('plasma')) return 'badge-cargo-plasma';
+  if (c.includes('oncology')) return 'badge-cargo-oncology';
+  return 'badge-cargo-vaccine';
+};
+
+const getConditionBadgeClass = (cond: ConditionStatus) => {
+  if (cond === 'Critical') return 'badge-status-critical';
+  if (cond === 'Warning') return 'badge-status-warning';
+  return 'badge-status-nominal';
+};
+
 export const FleetModule: React.FC = () => {
   const {
     vehicles,
@@ -90,7 +106,6 @@ export const FleetModule: React.FC = () => {
 
       if (ok) {
         setSaveSuccessMsg('Configuration updated successfully!');
-        // Keep drawer in sync if open for this device
         if (drawerVehicle && drawerVehicle.id === editingVehicle.id) {
           setDrawerVehicle((prev) =>
             prev
@@ -150,14 +165,14 @@ export const FleetModule: React.FC = () => {
             Fleet Inventory
           </h1>
           <p className="text-xs text-slate-400">
-            {vehicles.length} registered refrigerated units · Click any row for details, or use Actions to edit / jump to telemetry
+            {vehicles.length} registered refrigerated units · Real-time thermal status and configuration
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => setIsRegisterModalOpen(true)}
-          className="flex items-center gap-1.5 rounded-lg bg-sky-500 px-3.5 py-2 text-xs font-semibold text-slate-950 hover:bg-sky-400 transition-colors whitespace-nowrap"
+          className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-500 transition-colors shadow-xs whitespace-nowrap"
         >
           <Plus className="h-3.5 w-3.5" />
           <span>Register New Device</span>
@@ -165,7 +180,7 @@ export const FleetModule: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-800 bg-[#121824] p-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-800/80 bg-[#0f172a] p-3 shadow-xs">
         <div className="relative flex-1 min-w-[220px]">
           <Search className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-slate-500" />
           <input
@@ -173,12 +188,12 @@ export const FleetModule: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Filter by Gateway ID, Plate, Cargo, or Driver..."
-            className="h-9 w-full rounded-md border border-slate-800 bg-[#0d131f] pl-9 pr-3 text-xs text-slate-200 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none"
+            className="h-9 w-full rounded-md border border-slate-800 bg-[#0b101a] pl-9 pr-3 text-xs text-slate-200 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1 rounded-md border border-slate-800 bg-[#0d131f] p-0.5 text-xs">
+          <div className="flex items-center gap-1 rounded-md border border-slate-800 bg-[#0b101a] p-0.5 text-xs">
             {(['All', 'Nominal', 'Warning', 'Critical'] as const).map((cond) => (
               <button
                 key={cond}
@@ -186,7 +201,7 @@ export const FleetModule: React.FC = () => {
                 onClick={() => setConditionFilter(cond)}
                 className={`rounded px-2.5 py-1 font-medium transition-colors whitespace-nowrap ${
                   conditionFilter === cond
-                    ? 'bg-slate-800 text-sky-400'
+                    ? 'bg-slate-800 text-blue-400 font-semibold'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -199,7 +214,7 @@ export const FleetModule: React.FC = () => {
             value={connectivityFilter}
             onChange={(e) => setConnectivityFilter(e.target.value as 'All' | ConnectivityStatus)}
             aria-label="Filter by connectivity"
-            className="h-9 rounded-md border border-slate-800 bg-[#0d131f] px-3 text-xs text-slate-200 focus:border-sky-500 focus:outline-none"
+            className="h-9 rounded-md border border-slate-800 bg-[#0b101a] px-3 text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
           >
             <option value="All">All Connectivity</option>
             <option value="Online">Online</option>
@@ -210,13 +225,13 @@ export const FleetModule: React.FC = () => {
       </div>
 
       {/* Fleet Inventory Table */}
-      <div className="overflow-hidden rounded-lg border border-slate-800 bg-[#121824]">
+      <div className="overflow-hidden rounded-lg border border-slate-800/80 bg-[#0f172a] shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-800 bg-[#0e1420] text-slate-400">
+              <tr className="border-b border-slate-800 bg-[#0b101a] text-slate-400">
                 <th className="px-4 py-3 font-medium">Gateway ID</th>
-                <th className="px-4 py-3 font-medium">Cargo</th>
+                <th className="px-4 py-3 font-medium">Cargo & Standard</th>
                 <th className="px-4 py-3 text-right font-medium">Temp</th>
                 <th className="px-4 py-3 text-right font-medium">Safe Threshold</th>
                 <th className="px-4 py-3 font-medium">Connectivity</th>
@@ -225,7 +240,7 @@ export const FleetModule: React.FC = () => {
                 <th className="px-4 py-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/80">
+            <tbody className="divide-y divide-slate-800/70">
               {filteredVehicles.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-4 py-12 text-center text-slate-400">
@@ -239,17 +254,21 @@ export const FleetModule: React.FC = () => {
                     <tr
                       key={v.id}
                       onClick={() => setDrawerVehicle(v)}
-                      className="cursor-pointer hover:bg-slate-800/40 transition-colors"
+                      className="cursor-pointer hover:bg-slate-800/35 transition-colors"
                     >
                       <td className="px-4 py-3">
-                        <div className="font-mono font-semibold text-sky-400">{v.id}</div>
+                        <div className="font-mono font-semibold text-blue-400">{v.id}</div>
                         <div className="text-[11px] text-slate-400">
                           {v.vehiclePlate} · {v.driverName}
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-medium text-slate-200">{v.cargoType}</div>
-                        <div className="text-[11px] text-slate-400">{v.locationTier.city}</div>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-medium ${getCargoBadgeClass(v.cargoType)}`}>
+                            {v.cargoType}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-400 mt-0.5">{v.locationTier.city}</div>
                       </td>
                       <td
                         className={`px-4 py-3 text-right font-mono text-sm font-semibold tabular-nums ${
@@ -268,7 +287,7 @@ export const FleetModule: React.FC = () => {
                               ? 'text-emerald-400'
                               : v.connectivity === 'Degraded'
                               ? 'text-amber-400'
-                              : 'text-slate-500'
+                              : 'text-slate-400'
                           }`}
                         >
                           {v.connectivity}
@@ -289,13 +308,7 @@ export const FleetModule: React.FC = () => {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <span
-                          className={`font-semibold ${
-                            v.condition === 'Critical'
-                              ? 'text-rose-400'
-                              : v.condition === 'Warning'
-                              ? 'text-amber-400'
-                              : 'text-emerald-400'
-                          }`}
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${getConditionBadgeClass(v.condition)}`}
                         >
                           {v.condition}
                         </span>
@@ -308,14 +321,14 @@ export const FleetModule: React.FC = () => {
                             onClick={() => openEditModal(v)}
                             className="inline-flex items-center gap-1 rounded bg-slate-800/80 hover:bg-slate-700 px-2.5 py-1 text-[11px] font-medium text-slate-200 border border-slate-700/60 hover:text-white transition-colors"
                           >
-                            <Edit3 className="h-3 w-3 text-sky-400" />
+                            <Edit3 className="h-3 w-3 text-blue-400" />
                             <span>Edit</span>
                           </button>
                           <button
                             type="button"
                             title="Open Live Telemetry"
                             onClick={() => openVehicleInTelemetry(v.id)}
-                            className="rounded bg-slate-800/80 hover:bg-sky-500/20 p-1.5 text-slate-400 hover:text-sky-300 transition-colors border border-slate-700/60"
+                            className="rounded bg-slate-800/80 hover:bg-blue-600/20 p-1.5 text-slate-400 hover:text-blue-300 transition-colors border border-slate-700/60"
                           >
                             <Activity className="h-3.5 w-3.5" />
                           </button>
@@ -327,7 +340,7 @@ export const FleetModule: React.FC = () => {
                               if (trip) openTripInModule(trip.id, 'map');
                               else setActiveModule('trips');
                             }}
-                            className="rounded bg-slate-800/80 hover:bg-sky-500/20 p-1.5 text-slate-400 hover:text-sky-300 transition-colors border border-slate-700/60"
+                            className="rounded bg-slate-800/80 hover:bg-blue-600/20 p-1.5 text-slate-400 hover:text-blue-300 transition-colors border border-slate-700/60"
                           >
                             <MapPin className="h-3.5 w-3.5" />
                           </button>
@@ -347,11 +360,11 @@ export const FleetModule: React.FC = () => {
         <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-[2px]">
           <div
             id="drilldownDrawer"
-            className="flex h-full w-full max-w-md flex-col border-l border-slate-800 bg-[#121824] shadow-2xl"
+            className="flex h-full w-full max-w-md flex-col border-l border-slate-800/80 bg-[#0f172a] shadow-2xl"
           >
-            <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
+            <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4 bg-[#0b101a]">
               <div>
-                <div className="font-mono text-sm font-bold text-sky-400">{drawerVehicle.id}</div>
+                <div className="font-mono text-sm font-bold text-blue-400">{drawerVehicle.id}</div>
                 <div className="text-xs text-slate-400">
                   {drawerVehicle.vehiclePlate} · {drawerVehicle.driverName}
                 </div>
@@ -360,9 +373,9 @@ export const FleetModule: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => openEditModal(drawerVehicle)}
-                  className="flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-805 px-2.5 py-1 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors"
+                  className="flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors"
                 >
-                  <Edit3 className="h-3 w-3 text-sky-400" />
+                  <Edit3 className="h-3 w-3 text-blue-400" />
                   <span>Edit</span>
                 </button>
                 <button
@@ -378,9 +391,9 @@ export const FleetModule: React.FC = () => {
 
             <div className="flex-1 space-y-5 overflow-y-auto p-5 text-xs">
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-lg border border-slate-800 bg-[#0d131f] p-3">
+                <div className="rounded-lg border border-slate-800/90 bg-[#0b101a] p-3 shadow-xs">
                   <div className="flex items-center gap-1.5 text-slate-400">
-                    <Thermometer className="h-3.5 w-3.5 text-sky-400" />
+                    <Thermometer className="h-3.5 w-3.5 text-blue-400" />
                     <span>Cabin Temp</span>
                   </div>
                   <div className="mt-1.5 font-mono text-xl font-bold text-slate-100 tabular-nums">
@@ -391,7 +404,7 @@ export const FleetModule: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="rounded-lg border border-slate-800 bg-[#0d131f] p-3">
+                <div className="rounded-lg border border-slate-800/90 bg-[#0b101a] p-3 shadow-xs">
                   <div className="flex items-center gap-1.5 text-slate-400">
                     {drawerVehicle.tamperStatus === 'Sealed' ? (
                       <Lock className="h-3.5 w-3.5 text-emerald-400" />
@@ -410,13 +423,13 @@ export const FleetModule: React.FC = () => {
               </div>
 
               {/* Hardware & Link Telemetry with unmasked IMEI & IMSI + copy buttons */}
-              <div className="space-y-2.5 rounded-lg border border-slate-800 bg-[#0d131f] p-4">
+              <div className="space-y-2.5 rounded-lg border border-slate-800/90 bg-[#0b101a] p-4 shadow-xs">
                 <div className="flex items-center justify-between">
                   <div className="font-semibold text-slate-200">Hardware & Link Telemetry</div>
                   <button
                     type="button"
                     onClick={() => openEditModal(drawerVehicle)}
-                    className="flex items-center gap-1 text-[11px] font-medium text-sky-400 hover:text-sky-300"
+                    className="flex items-center gap-1 text-[11px] font-medium text-blue-400 hover:text-blue-300"
                   >
                     <Edit3 className="h-3 w-3" />
                     <span>Edit Config</span>
@@ -433,7 +446,7 @@ export const FleetModule: React.FC = () => {
                         type="button"
                         onClick={() => handleCopy(drawerVehicle.imei, 'drawer-imei')}
                         title="Copy IMEI"
-                        className="text-slate-400 hover:text-sky-400 transition-colors p-0.5"
+                        className="text-slate-400 hover:text-blue-400 transition-colors p-0.5"
                       >
                         {copiedKey === 'drawer-imei' ? (
                           <Check className="h-3 w-3 text-emerald-400" />
@@ -454,7 +467,7 @@ export const FleetModule: React.FC = () => {
                         type="button"
                         onClick={() => handleCopy(drawerVehicle.imsi, 'drawer-imsi')}
                         title="Copy IMSI"
-                        className="text-slate-400 hover:text-sky-400 transition-colors p-0.5"
+                        className="text-slate-400 hover:text-blue-400 transition-colors p-0.5"
                       >
                         {copiedKey === 'drawer-imsi' ? (
                           <Check className="h-3 w-3 text-emerald-400" />
@@ -476,14 +489,14 @@ export const FleetModule: React.FC = () => {
                 </div>
               </div>
 
-              <div className="space-y-1.5 rounded-lg border border-slate-800 bg-[#0d131f] p-4">
+              <div className="space-y-1.5 rounded-lg border border-slate-800/90 bg-[#0b101a] p-4 shadow-xs">
                 <div className="font-semibold text-slate-200">AI Triage Verdict</div>
                 <p className="leading-relaxed text-slate-300">{drawerVehicle.aiTriageNote}</p>
               </div>
             </div>
 
             {/* Deep-links Footer */}
-            <div className="space-y-2 border-t border-slate-800 p-4">
+            <div className="space-y-2 border-t border-slate-800 p-4 bg-[#0b101a]">
               <button
                 type="button"
                 onClick={() => {
@@ -491,7 +504,7 @@ export const FleetModule: React.FC = () => {
                   setDrawerVehicle(null);
                   openVehicleInTelemetry(id);
                 }}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-sky-500 px-4 py-2.5 text-xs font-semibold text-slate-950 hover:bg-sky-400 transition-colors"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-500 transition-colors shadow-xs"
               >
                 <Activity className="h-3.5 w-3.5" />
                 <span>Open Live Telemetry</span>
@@ -505,9 +518,9 @@ export const FleetModule: React.FC = () => {
                       setDrawerVehicle(null);
                       openTripInModule(activeTripForDrawer.id, 'map');
                     }}
-                    className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-[#0d131f] px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-800"
+                    className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors"
                   >
-                    <MapPin className="h-3.5 w-3.5 text-sky-400" />
+                    <MapPin className="h-3.5 w-3.5 text-blue-400" />
                     <span>Trip Replay</span>
                   </button>
                 ) : (
@@ -517,9 +530,9 @@ export const FleetModule: React.FC = () => {
                       setDrawerVehicle(null);
                       setActiveModule('trips');
                     }}
-                    className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-[#0d131f] px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-800"
+                    className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors"
                   >
-                    <MapPin className="h-3.5 w-3.5 text-sky-400" />
+                    <MapPin className="h-3.5 w-3.5 text-blue-400" />
                     <span>Trips</span>
                   </button>
                 )}
@@ -531,7 +544,7 @@ export const FleetModule: React.FC = () => {
                     setDrawerVehicle(null);
                     setActiveModule('ai_insights');
                   }}
-                  className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-[#0d131f] px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-800"
+                  className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors"
                 >
                   <ShieldAlert className="h-3.5 w-3.5 text-amber-400" />
                   <span>AI Risk Profile</span>
@@ -545,16 +558,16 @@ export const FleetModule: React.FC = () => {
       {/* Edit Vehicle Modal */}
       {editingVehicle && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg rounded-xl border border-slate-800 bg-[#121824] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl border border-slate-800 bg-[#0f172a] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4 bg-[#0e1420]">
+            <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4 bg-[#0b101a]">
               <div>
                 <h3 className="font-semibold text-slate-100 flex items-center gap-2 text-sm">
-                  <Edit3 className="h-4 w-4 text-sky-400" />
+                  <Edit3 className="h-4 w-4 text-blue-400" />
                   Edit Gateway Configuration
                 </h3>
                 <p className="text-xs text-slate-400 font-mono mt-0.5">
-                  Device ID: <span className="text-sky-400 font-semibold">{editingVehicle.id}</span>
+                  Device ID: <span className="text-blue-400 font-semibold">{editingVehicle.id}</span>
                 </p>
               </div>
               <button
@@ -586,7 +599,7 @@ export const FleetModule: React.FC = () => {
                     value={editPlate}
                     onChange={(e) => setEditPlate(e.target.value)}
                     placeholder="e.g. TRK-9901"
-                    className="h-9 w-full rounded-md border border-slate-800 bg-[#0d131f] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
+                    className="h-9 w-full rounded-md border border-slate-800 bg-[#0b101a] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
 
@@ -600,7 +613,7 @@ export const FleetModule: React.FC = () => {
                     value={editDriver}
                     onChange={(e) => setEditDriver(e.target.value)}
                     placeholder="e.g. Marcus Vance"
-                    className="h-9 w-full rounded-md border border-slate-800 bg-[#0d131f] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
+                    className="h-9 w-full rounded-md border border-slate-800 bg-[#0b101a] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -616,7 +629,7 @@ export const FleetModule: React.FC = () => {
                     value={editCargo}
                     onChange={(e) => setEditCargo(e.target.value)}
                     placeholder="e.g. Live Cold-Chain Telemetry / Biologics"
-                    className="h-9 w-full rounded-md border border-slate-800 bg-[#0d131f] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
+                    className="h-9 w-full rounded-md border border-slate-800 bg-[#0b101a] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
 
@@ -625,7 +638,7 @@ export const FleetModule: React.FC = () => {
                   <select
                     value={editCargoClass}
                     onChange={(e) => setEditCargoClass(e.target.value as 'Frozen' | 'Chilled' | 'Ambient')}
-                    className="h-9 w-full rounded-md border border-slate-800 bg-[#0d131f] px-2.5 text-xs text-slate-200 focus:border-sky-500 focus:outline-none"
+                    className="h-9 w-full rounded-md border border-slate-800 bg-[#0b101a] px-2.5 text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
                   >
                     <option value="Chilled">Chilled (2-8°C)</option>
                     <option value="Frozen">Frozen (-20°C)</option>
@@ -648,7 +661,7 @@ export const FleetModule: React.FC = () => {
                       required
                       value={editSafeMin}
                       onChange={(e) => setEditSafeMin(parseFloat(e.target.value) || 0)}
-                      className="h-9 w-full rounded-md border border-slate-800 bg-[#0d131f] pl-11 pr-3 font-mono text-xs text-slate-200 focus:border-sky-500 focus:outline-none"
+                      className="h-9 w-full rounded-md border border-slate-800 bg-[#0b101a] pl-11 pr-3 font-mono text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
                   <div className="relative">
@@ -659,7 +672,7 @@ export const FleetModule: React.FC = () => {
                       required
                       value={editSafeMax}
                       onChange={(e) => setEditSafeMax(parseFloat(e.target.value) || 0)}
-                      className="h-9 w-full rounded-md border border-slate-800 bg-[#0d131f] pl-11 pr-3 font-mono text-xs text-slate-200 focus:border-sky-500 focus:outline-none"
+                      className="h-9 w-full rounded-md border border-slate-800 bg-[#0b101a] pl-11 pr-3 font-mono text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -677,7 +690,7 @@ export const FleetModule: React.FC = () => {
                     maxLength={18}
                     onChange={(e) => setEditImei(e.target.value)}
                     placeholder="e.g. 860123456789012"
-                    className="h-9 w-full font-mono rounded-md border border-slate-800 bg-[#0d131f] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
+                    className="h-9 w-full font-mono rounded-md border border-slate-800 bg-[#0b101a] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
 
@@ -691,7 +704,7 @@ export const FleetModule: React.FC = () => {
                     maxLength={18}
                     onChange={(e) => setEditImsi(e.target.value)}
                     placeholder="e.g. 310410123456789"
-                    className="h-9 w-full font-mono rounded-md border border-slate-800 bg-[#0d131f] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
+                    className="h-9 w-full font-mono rounded-md border border-slate-800 bg-[#0b101a] px-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -709,7 +722,7 @@ export const FleetModule: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="flex items-center gap-1.5 rounded-lg bg-sky-500 px-4 py-2 font-semibold text-slate-950 hover:bg-sky-400 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 transition-colors shadow-xs disabled:opacity-50"
                 >
                   {isSaving ? (
                     <>
